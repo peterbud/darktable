@@ -10,7 +10,7 @@ if(WIN32)
   # MSYS2 gcc compiler gives false positive warnings for (format (printf, 1, 2) - need to turn off for the time being
   CHECK_COMPILER_FLAG_AND_ENABLE_IT(-Wno-format)
 
-  CHECK_COMPILER_FLAG_AND_ENABLE_IT(-mms-bitfields)
+  #CHECK_COMPILER_FLAG_AND_ENABLE_IT(-mms-bitfields)
 else()
   CHECK_COMPILER_FLAG_AND_ENABLE_IT(-Wformat)
   CHECK_COMPILER_FLAG_AND_ENABLE_IT(-Wformat-security)
