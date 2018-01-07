@@ -57,7 +57,7 @@ build_darktable() {
     cd $(cygpath ${APPVEYOR_BUILD_FOLDER})
 
     mkdir build && cd build
-    cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(cygpath ${APPVEYOR_BUILD_FOLDER})/build $(cygpath ${APPVEYOR_BUILD_FOLDER})
+    cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(cygpath ${APPVEYOR_BUILD_FOLDER})/build $(cygpath ${APPVEYOR_BUILD_FOLDER})
     cmake --build .
     cmake --build . --target package
 }
@@ -81,7 +81,7 @@ cat > "$FONTCONFIG_FILE" <<EOF
 <fontconfig><dir>$(cygpath -aw fonts)</dir></fontconfig>
 EOF
 
-execute 'Installing base-devel and toolchain'  pacman -S --noconfirm mingw-w64-x86_64-{toolchain,clang,cmake}
+execute 'Installing base-devel and toolchain'  pacman -S --noconfirm mingw-w64-x86_64-{toolchain,clang,cmake,ninja}
 execute 'Installing dependencies' pacman -S --noconfirm  mingw-w64-x86_64-{exiv2,lcms2,lensfun,dbus-glib,openexr,sqlite3,libxslt,libsoup,libwebp,libsecret,lua,graphicsmagick,openjpeg2,gtk3,pugixml,libexif,osm-gps-map,libgphoto2,flickcurl,drmingw,gettext,python3,iso-codes}
 execute 'Updating lensfun databse' lensfun-update-data
 execute 'Building darktable' build_darktable
