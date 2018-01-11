@@ -658,6 +658,9 @@ void dt_gui_gtk_quit()
   dt_gui_gtk_write_config();
   gtk_window_iconify(win);
 
+  // Save current accelerator map to file on exit
+  dt_accelerator_save_map_to_file(NULL);
+
   GtkWidget *widget;
   widget = darktable.gui->widgets.left_border;
   g_signal_handlers_block_by_func(widget, draw_borders, GINT_TO_POINTER(0));

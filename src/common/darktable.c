@@ -62,6 +62,7 @@
 #include "gui/gtk.h"
 #include "gui/guides.h"
 #include "gui/presets.h"
+#include "gui/accelerators.h"
 #include "libs/lib.h"
 #include "lua/init.h"
 #include "views/view.h"
@@ -145,55 +146,6 @@ gboolean dt_supported_image(const gchar *filename)
       break;
     }
   return supported;
-}
-
-static void strip_semicolons_from_keymap(const char *path)
-{
-  char pathtmp[PATH_MAX] = { 0 };
-  FILE *fin = g_fopen(path, "rb");
-  FILE *fout;
-  int i;
-  int c = '\0';
-
-  if(!fin) return;
-
-  snprintf(pathtmp, sizeof(pathtmp), "%s_tmp", path);
-  fout = g_fopen(pathtmp, "wb");
-
-  if(!fout)
-  {
-    fclose(fin);
-    return;
-  }
-
-  // First ignoring the first three lines
-  for(i = 0; i < 3; i++)
-  {
-    while(c != '\n' && c != '\r' && c != EOF) c = fgetc(fin);
-    while(c == '\n' || c == '\r') c = fgetc(fin);
-  }
-
-  // Then ignore the first two characters of each line, copying the rest out
-  while(c != EOF)
-  {
-    fseek(fin, 2, SEEK_CUR);
-    do
-    {
-      c = fgetc(fin);
-      if(c != EOF) fputc(c, fout);
-    } while(c != '\n' && c != '\r' && c != EOF);
-  }
-
-  fclose(fin);
-  fclose(fout);
-
-  GFile *gpath = g_file_new_for_path(path);
-  GFile *gpathtmp = g_file_new_for_path(pathtmp);
-
-  g_file_delete(gpath, NULL, NULL);
-  g_file_move(gpathtmp, gpath, 0, NULL, NULL, NULL, NULL);
-  g_object_unref(gpath);
-  g_object_unref(gpathtmp);
 }
 
 int dt_load_from_string(const gchar *input, gboolean open_image_in_dr, gboolean *single_image)
@@ -608,6 +560,8 @@ int dt_init(int argc, char *argv[], const gboolean init_gui, const gboolean load
           darktable.unmuted |= DT_DEBUG_PRINT; // print errors are reported on console
         else if(!strcmp(argv[k + 1], "camsupport"))
           darktable.unmuted |= DT_DEBUG_CAMERA_SUPPORT; // camera support warnings are reported on console
+        else if(!strcmp(argv[k + 1], "accelerators"))
+          darktable.unmuted |= DT_DEBUG_ACCELERATORS; // camera support warnings are reported on console
         else
           return usage(argv[0]);
         k++;
@@ -899,22 +853,12 @@ int dt_init(int argc, char *argv[], const gboolean init_gui, const gboolean load
 
     // init the gui part of views
     dt_view_manager_gui_init(darktable.view_manager);
-    // Loading the keybindings
-    char keyfile[PATH_MAX] = { 0 };
 
-    // First dump the default keymapping
-    snprintf(keyfile, sizeof(keyfile), "%s/keyboardrc_default", datadir);
-    gtk_accel_map_save(keyfile);
+    // Save the default accelertor map (only meaningful on the first start)
+    dt_accelerator_save_default_map_to_file();
 
-    // Removing extraneous semi-colons from the default keymap
-    strip_semicolons_from_keymap(keyfile);
-
-    // Then load any modified keys if available
-    snprintf(keyfile, sizeof(keyfile), "%s/keyboardrc", datadir);
-    if(g_file_test(keyfile, G_FILE_TEST_EXISTS))
-      gtk_accel_map_load(keyfile);
-    else
-      gtk_accel_map_save(keyfile); // Save the default keymap if none is present
+    // Load accelerator map from the config file
+    dt_accelerator_load_map_from_file(NULL);
 
     // initialize undo struct
     darktable.undo = dt_undo_init();

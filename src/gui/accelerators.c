@@ -27,6 +27,10 @@
 #include <assert.h>
 #include <gtk/gtk.h>
 
+/*  private variables  */
+
+static gboolean keyboardrc_reset = FALSE;
+
 void dt_accel_path_global(char *s, size_t n, const char *path)
 {
   snprintf(s, n, "<Darktable>/%s/%s", NC_("accel", "global"), path);
@@ -965,6 +969,134 @@ void dt_accel_rename_lua(const gchar *path, const gchar *new_path)
       l = g_slist_next(l);
     }
   }
+}
+
+void dt_accelerator_init()
+{
+  dt_print(DT_DEBUG_ACCELERATORS, "[accelerators] initialze accelerators\n");
+
+}
+
+void dt_accelerator_exit()
+{
+  dt_print(DT_DEBUG_ACCELERATORS, "[accelerators] exit and destroy accelerators\n");
+
+}
+
+void dt_accelerator_save_default_map_to_file()
+{
+  gchar dir[PATH_MAX] = { 0 };
+  gchar *keyfile = NULL;
+
+  dt_loc_get_user_config_dir(dir, sizeof(dir));
+  keyfile = g_build_filename(dir, "keyboardrc_default", (char *)NULL);
+  if(!g_file_test(keyfile, G_FILE_TEST_EXISTS))
+  {
+    // No keyboardrc_default exist, meaning this is the first start
+    // Create a keyboardrc_default
+    dt_accelerator_save_map_to_file(keyfile);
+  }
+
+  g_free(keyfile);
+}
+// Saves the current accelerator map to a file
+// In order to work, the accelerator map should be already loaded
+// In case the default file already exists does nothing
+void dt_accelerator_save_map_to_file(gchar *mapfile)
+{
+  gchar dir[PATH_MAX] = { 0 };
+  gchar *keyfile = NULL;
+
+  if(mapfile==NULL)
+  {
+    if (keyboardrc_reset)
+      // in case an accelerator reset performed, don't save the accelerator map
+      return;
+
+    dt_loc_get_user_config_dir(dir, sizeof(dir));
+    keyfile = g_build_filename(dir, "keyboardrc", (char *)NULL);
+  }
+  else
+    keyfile = g_strdup(mapfile);
+
+  dt_print(DT_DEBUG_ACCELERATORS, "[accelerators] saving accelerator map: %s\n", keyfile);
+  // Save accelerator map
+  gtk_accel_map_save(keyfile);
+
+  if(mapfile == NULL)
+    //in case the default file has just been saved clear the reset flag
+    keyboardrc_reset = FALSE;
+
+  g_free(keyfile);
+}
+
+
+// Loads accelertor map from a file
+// The accelrator map file is located in daktable's config directory
+// If no existing accelerator map is found, it takes the default accelereraor
+// map and uses that as a staring point
+void dt_accelerator_load_map_from_file(gchar *mapfile)
+{
+  gchar dir[PATH_MAX] = { 0 };
+  gchar *keyfile = NULL;
+
+  if(mapfile == NULL)
+  {
+    // No mapfile is given, this means we need to load the keyboardrc
+    // from the config directory - normal startup process
+    dt_loc_get_user_config_dir(dir, sizeof(dir));
+    keyfile = g_build_filename(dir, "keyboardrc", (char *)NULL);
+    if(!g_file_test(keyfile, G_FILE_TEST_EXISTS))
+    {
+      // Save the accelerator map if none is present
+      // This happens at the very first time startup
+      dt_accelerator_save_map_to_file(keyfile);
+    }
+  }
+  else
+  {
+    keyfile = g_strdup(mapfile);
+  }
+
+  dt_print(DT_DEBUG_ACCELERATORS, "[accelerators] loading accelerator map from %s\n",keyfile);
+
+  // Load the accelerator map
+  gtk_accel_map_load(keyfile);
+
+  g_free(keyfile);
+}
+
+gboolean dt_accelerator_reset_map_to_default()
+{
+  gchar dir[PATH_MAX] = { 0 };
+  gchar *source = NULL;
+  gchar *destination = NULL;
+  gboolean success = FALSE;
+
+  dt_loc_get_user_config_dir(dir, sizeof(dir));
+  source = g_build_filename(dir, "keyboardrc_default", (char *)NULL);
+  destination = g_build_filename(dir, "keyboardrc", (char *)NULL);
+  GFile *sourcefile = g_file_new_for_path(source);
+  GFile *destinationfile = g_file_new_for_path(destination);
+
+  if(g_file_copy(sourcefile, destinationfile, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, NULL)) success = TRUE;
+
+  if(success)
+  {
+    dt_print(DT_DEBUG_ACCELERATORS, "[accelerators] reset accelerators to default successful\n");
+    // Load for immediate effect
+    dt_accelerator_load_map_from_file(NULL);
+    keyboardrc_reset = TRUE;
+  }
+  else
+    dt_print(DT_DEBUG_ACCELERATORS, "[accelerators] reset accelerators to default failed\n");
+
+  g_object_unref(sourcefile);
+  g_object_unref(destinationfile);
+  g_free(source);
+  g_free(destination);
+
+  return success;
 }
 
 // modelines: These editor modelines have been set for all relevant files by tools/update_modelines.sh

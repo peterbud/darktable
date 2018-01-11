@@ -866,15 +866,8 @@ static gboolean tree_key_press(GtkWidget *widget, GdkEventKey *event, gpointer d
   GSList *remapped;
   dt_accel_t query;
 
-  gchar accel[256];
-  gchar datadir[PATH_MAX] = { 0 };
-  gchar accelpath[PATH_MAX] = { 0 };
-
   // We can just ignore mod key presses outright
   if(event->is_modifier) return FALSE;
-
-  dt_loc_get_user_config_dir(datadir, sizeof(datadir));
-  snprintf(accelpath, sizeof(accelpath), "%s/keyboardrc", datadir);
 
   // Otherwise, determine whether we're in remap mode or not
   if(darktable.control->accel_remap_str)
@@ -902,8 +895,8 @@ static gboolean tree_key_press(GtkWidget *widget, GdkEventKey *event, gpointer d
     gtk_tree_path_free(darktable.control->accel_remap_path);
     darktable.control->accel_remap_path = NULL;
 
-    // Save the changed keybindings
-    gtk_accel_map_save(accelpath);
+    // Save the changed accelerator map
+    dt_accelerator_save_map_to_file(NULL);
 
     return TRUE;
   }
@@ -917,6 +910,7 @@ static gboolean tree_key_press(GtkWidget *widget, GdkEventKey *event, gpointer d
       return FALSE;
 
     // Otherwise, construct the proper accelerator path and delete its entry
+    gchar accel[256];
     g_strlcpy(accel, "<Darktable>", sizeof(accel));
     path = gtk_tree_model_get_path(model, &iter);
     path_to_accel(model, path, accel, sizeof(accel));
@@ -925,8 +919,8 @@ static gboolean tree_key_press(GtkWidget *widget, GdkEventKey *event, gpointer d
     gtk_accel_map_change_entry(accel, 0, 0, TRUE);
     update_accels_model(NULL, model);
 
-    // Saving the changed bindings
-    gtk_accel_map_save(accelpath);
+    // Saving the changed accelerator map
+    dt_accelerator_save_map_to_file(NULL);
 
     return TRUE;
   }
@@ -999,8 +993,6 @@ static gboolean tree_key_press_presets(GtkWidget *widget, GdkEventKey *event, gp
 static void import_export(GtkButton *button, gpointer data)
 {
   GtkWidget *chooser;
-  gchar confdir[PATH_MAX] = { 0 };
-  gchar accelpath[PATH_MAX] = { 0 };
 
   if(data)
   {
@@ -1021,7 +1013,7 @@ static void import_export(GtkButton *button, gpointer data)
     gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), "keyboardrc");
     if(gtk_dialog_run(GTK_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT)
     {
-      gtk_accel_map_save(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser)));
+      dt_accelerator_save_map_to_file(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser)));
       gchar *folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(chooser));
       dt_conf_set_string("ui_last/export_path", folder);
       g_free(folder);
@@ -1048,13 +1040,7 @@ static void import_export(GtkButton *button, gpointer data)
     {
       if(g_file_test(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser)), G_FILE_TEST_EXISTS))
       {
-        // Loading the file
-        gtk_accel_map_load(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser)));
-
-        // Saving to the permanent keyboardrc
-        dt_loc_get_user_config_dir(confdir, sizeof(confdir));
-        snprintf(accelpath, sizeof(accelpath), "%s/keyboardrc", confdir);
-        gtk_accel_map_save(accelpath);
+        dt_accelerator_load_map_from_file(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser)));
 
         gchar *folder = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(chooser));
         dt_conf_set_string("ui_last/import_path", folder);
@@ -1067,42 +1053,15 @@ static void import_export(GtkButton *button, gpointer data)
 
 static void restore_defaults(GtkButton *button, gpointer data)
 {
-  GList *ops;
-  dt_iop_module_so_t *op;
-  gchar accelpath[256];
-  gchar dir[PATH_MAX] = { 0 };
-  gchar path[PATH_MAX] = { 0 };
-
   GtkWidget *message
       = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK_CANCEL,
                                _("are you sure you want to restore the default keybindings?  this will "
                                  "erase any modifications you have made."));
   if(gtk_dialog_run(GTK_DIALOG(message)) == GTK_RESPONSE_OK)
   {
-    // First load the default keybindings for immediate effect
-    dt_loc_get_user_config_dir(dir, sizeof(dir));
-    snprintf(path, sizeof(path), "%s/keyboardrc_default", dir);
-    gtk_accel_map_load(path);
-
-    // Now deleting any iop show shortcuts
-    ops = darktable.iop;
-    while(ops)
-    {
-      op = (dt_iop_module_so_t *)ops->data;
-      snprintf(accelpath, sizeof(accelpath), "<Darktable>/darkroom/modules/%s/show", op->op);
-      gtk_accel_map_change_entry(accelpath, 0, 0, TRUE);
-      ops = g_list_next(ops);
-    }
-
-    // Then delete any changes to the user's keyboardrc so it gets reset
-    // on next startup
-    dt_loc_get_user_config_dir(dir, sizeof(dir));
-    snprintf(path, sizeof(path), "%s/keyboardrc", dir);
-
-    GFile *gpath = g_file_new_for_path(path);
-    g_file_delete(gpath, NULL, NULL);
-    g_object_unref(gpath);
+    dt_accelerator_reset_map_to_default();
   }
+
   gtk_widget_destroy(message);
 }
 

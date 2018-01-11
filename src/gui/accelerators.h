@@ -88,6 +88,12 @@ void dt_accel_rename_preset_lib(dt_lib_module_t *module, const gchar *path, cons
 void dt_accel_rename_global(const gchar *path, const gchar *new_path);
 void dt_accel_rename_lua(const gchar *path, const gchar *new_path);
 
+void dt_accelerator_init();
+void dt_accelerator_exit();
+void dt_accelerator_save_default_map_to_file();
+void dt_accelerator_save_map_to_file(gchar *mapfile);
+void dt_accelerator_load_map_from_file(gchar *mapfile);
+gboolean dt_accelerator_reset_map_to_default();
 // modelines: These editor modelines have been set for all relevant files by tools/update_modelines.sh
 // vim: shiftwidth=2 expandtab tabstop=2 cindent
 // kate: tab-indents: off; indent-width 2; replace-tabs on; indent-mode cstyle; remove-trailing-spaces modified;
