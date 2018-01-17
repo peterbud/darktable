@@ -801,6 +801,9 @@ endif(BUILD_CMSTEST)
 # have a gui tool to create CLUTs from colour chart targets
 add_subdirectory(chart)
 
+# have a gui tool to manage darktable libraries
+add_subdirectory(librarymgmt)
+
 # have some test programs for unit testing, ...
 if(BUILD_TESTS)
   add_subdirectory(tests)

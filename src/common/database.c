@@ -1006,6 +1006,21 @@ static int _upgrade_data_schema_step(dt_database_t *db, int version)
     new_version = 1; // the version we transformed the db to. this way it might be possible to roll back or
     // add fast paths
   }
+  else if(version == 1)
+  {
+    // 1 -> 2 added library location
+    sqlite3_exec(db->handle, "BEGIN TRANSACTION", NULL, NULL, NULL);
+    sqlite3_exec(db->handle,
+            "CREATE TABLE IF NOT EXISTS data.libraries ("
+            "library_id  INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "name        VARCHAR NOT NULL,"
+            "description VARCHAR,"
+            "path        VARCHAR NOT NULL,"
+            "is_default  BOOLEAN NOT NULL"
+            "               DEFAULT FALSE);", NULL, NULL, NULL);
+    sqlite3_exec(db->handle, "COMMIT", NULL, NULL, NULL);
+    new_version = 2;
+  }
   else
     new_version = version; // should be the fallback so that calling code sees that we are in an infinite loop
 
