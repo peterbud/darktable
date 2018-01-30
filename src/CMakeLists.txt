@@ -452,6 +452,7 @@ if(WIN32)
 
   list(APPEND LIBS psapi) # Needed for GetProcessMemoryInfo()
   list(APPEND LIBS exchndl) # Needed for exception handling and backtrace()
+  list(APPEND LIBS stdc++)
 endif(WIN32)
 
 if(NOT CUSTOM_CFLAGS)
