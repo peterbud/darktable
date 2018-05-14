@@ -18,6 +18,7 @@
 */
 #include "dtwin.h"
 #include <setjmp.h>
+#include <errno.h>
 #include <windows.h>
 
 const wchar_t *dtwin_get_locale()
