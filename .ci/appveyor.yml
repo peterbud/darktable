@@ -32,6 +32,8 @@ install:
 before_build:
   - cmd: "for /f %%i in ('git describe --tags --dirty') do set NEWVERSION=%%i"
   - cmd: appveyor UpdateBuild -Version "%NEWVERSION:release-=%"
+  - del C:\Windows\System32\libssl-*.dll C:\Windows\system32\libcrypto-*.dll
+  - del C:\Windows\SysWOW64\libssl-*.dll C:\Windows\SysWOW64\libcrypto-*.dll
 
 build_script:
   - C:\msys64\usr\bin\pacman --noconfirm --sync --refresh --refresh --sysupgrade --sysupgrade
