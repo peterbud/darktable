@@ -8,6 +8,7 @@ pacman --noconfirm -Suy
 
 pacman --noconfirm -S --needed \
     git \
+    mingw-w64-$MSYS2_ARCH-cmake \
     mingw-w64-$MSYS2_ARCH-exiv2 \
     mingw-w64-$MSYS2_ARCH-lcms2 \
     mingw-w64-$MSYS2_ARCH-lensfun \
