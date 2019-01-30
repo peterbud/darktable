@@ -21,6 +21,10 @@ jobs:
           set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
           %CD:~0,2%\msys64\usr\bin\bash -lc ".ci/ci-script-windows2.sh"
         displayName: Install Depdendencies
+        env:
+          MSYS2_ARCH: $(MSYS2_ARCH)
+          MSYSTEM: $(MSYSTEM)
+          CHERE_INVOKING: yes
       - script: |
           set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem
           %CD:~0,2%\msys64\usr\bin\bash -lc ".ci/ci-script-build.sh"
