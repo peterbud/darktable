@@ -29,7 +29,9 @@ echo "## Configuring build environment"
 echo "##############################################################################"
 
 mkdir build && cd build
-cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release ${SOURCE_DIR}
+echo $PATH
+which cmake
+#cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release ${SOURCE_DIR}
 
 echo ""
 echo "##############################################################################"
