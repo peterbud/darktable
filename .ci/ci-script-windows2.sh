@@ -8,6 +8,7 @@ pacman --noconfirm -Suy
 
 pacman --noconfirm -S --needed \
     git \
+    base-devel \
     mingw-w64-$MSYS2_ARCH-toolchain \
     mingw-w64-$MSYS2_ARCH-cmake \
     mingw-w64-$MSYS2_ARCH-exiv2 \
