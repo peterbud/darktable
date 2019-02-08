@@ -32,4 +32,4 @@ pacman --noconfirm -S --needed \
     mingw-w64-$MSYS2_ARCH-gettext \
     mingw-w64-$MSYS2_ARCH-iso-codes
     
-pacman -U http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-lensfun-0.3.2-4-any.pkg.tar.xz
+pacman --noconfirm -U http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-lensfun-0.3.2-4-any.pkg.tar.xz
