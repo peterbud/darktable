@@ -29,8 +29,8 @@ echo "## Configuring build environment"
 echo "##############################################################################"
 
 mkdir build && cd build
-echo $PATH
-which cmake
+echo $PWD
+cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/darktable ../.
 #cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release ${SOURCE_DIR}
 
 echo ""
@@ -38,4 +38,4 @@ echo "##########################################################################
 echo "## Building darktable"
 echo "##############################################################################"
 
-cmake --build .
+#cmake --build .
