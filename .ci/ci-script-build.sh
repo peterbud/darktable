@@ -2,7 +2,7 @@
 #
 # Environment variables:
 #
-# SOURCE_DIR: Set to the directory of the libgit2 source (optional)
+# SOURCE_DIR: Set to the directory of the darktable source (optional)
 #     If not set, it will be derived relative to this script.
 
 set -e
@@ -29,7 +29,7 @@ echo "## Configuring build environment"
 echo "##############################################################################"
 
 mkdir build && cd build
-cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release ${SOURCE_DIR}"
+cmake -G "MSYS Makefiles" -DCMAKE_BUILD_TYPE=Release ${SOURCE_DIR}
 
 echo ""
 echo "##############################################################################"
