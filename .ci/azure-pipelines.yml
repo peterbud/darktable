@@ -9,6 +9,10 @@ jobs:
           MSYSTEM: MINGW64
           MSYS2_ARCH: x86_64
     steps:
+      - checkout: self
+        clean: true
+        submodules: true
+        displayName: Checkout darktable sources
       - script: |
           choco install msys2 --params="/InstallDir:%CD:~0,2%\msys64 /NoUpdate /NoPath"
         displayName: Install MSYS2
