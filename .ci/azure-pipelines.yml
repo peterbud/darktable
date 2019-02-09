@@ -26,7 +26,7 @@ jobs:
             CFLAGS=-pipe
             CXXFLAGS=-pipe
             TARGET=build
-            INSTALL_PREFIX=/build/darktable-install
+            INSTALL_PREFIX=/build/darktable-build
             SRC_DIR=/build/darktable
             BUILD_DIR=/build/darktable-build
   - job: WINDOWS
