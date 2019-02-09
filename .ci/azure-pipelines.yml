@@ -7,8 +7,7 @@ jobs:
       - task: docker@1
         displayName: Build
         inputs:
-          command: build
-          dockerFile: /.ci/Dockerfile
+          command: run
           imageName: darktable/darktable
           envVars:
             CC=gcc-8 
