@@ -16,10 +16,16 @@ jobs:
             $(Build.SourcesDirectory):/build/darktable
             $(Build.BinariesDirectory):/build/darktable-build
           containerCommand: /build/darktable/.ci/ci-script.sh
+          workDir: '/build/darktable-build'
           envVars:
             CC=gcc-8 
-            CXX=g++-8 
+            CXX=g++-8
+            CFLAGS=-pipe
+            CXXFLAGS=-pipe
             TARGET=build
+            INSTALL_PREFIX=/build/darktable-install
+            SRC_DIR=/build/darktable
+            BUILD_DIR=/build/darktable-build
   - job: WINDOWS
     displayName: 'WINDOWS (x86_64; GCC)'
     timeoutInMinutes: 60
