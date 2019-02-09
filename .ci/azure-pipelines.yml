@@ -4,21 +4,16 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
-      - task: docker@0
+      - task: docker@1
         displayName: Build
         inputs:
-          action: 'Run an image'
-          imageName: 'darktable/darktable'
-          volumes: |
-            $(Build.SourcesDirectory):/build/darktable
-            $(Build.BinariesDirectory):/build/darktable-build
+          command: build
+          dockerFile: /.ci/Dockerfile
+          imageName: darktable/darktable
           envVars:
             CC=gcc-8 
             CXX=g++-8 
             TARGET=build
-          containerCommand: '/build/darktable/.ci/ci-script.sh'
-          workDir: '/build'
-          detached: false
   - job: WINDOWS
     displayName: 'WINDOWS (x86_64; GCC)'
     timeoutInMinutes: 60
