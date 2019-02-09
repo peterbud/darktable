@@ -1,22 +1,4 @@
 jobs:
-- job: LINUX-GCC
-  displayName: 'Linux (amd64; Trusty; GCC)'
-  pool:
-    vmImage: 'Ubuntu 16.04'
-  steps:
-    - task: docker@0
-      displayName: Build
-      inputs:
-      action: 'Run an image'
-      imageName: darktable/darktable
-      volumes: |
-       $(Build.SourcesDirectory):/src
-       $(Build.BinariesDirectory):/build
-      envVars:
-        CC=gcc
-      workDir: '/build'
-      containerCommand: '/src/ci/build.sh'
-      detached: false
   - job: MSYS2-MINGW64
     timeoutInMinutes: 60
     pool:
