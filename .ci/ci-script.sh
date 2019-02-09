@@ -27,6 +27,10 @@
 
 set -ex
 
+echo "$BUILD_DIR"
+echo $PWD
+ls
+
 PARALLEL="-j2"
 
 target_build()
