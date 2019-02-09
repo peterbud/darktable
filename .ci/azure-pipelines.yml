@@ -16,7 +16,7 @@ jobs:
             CC=gcc-8 
             CXX=g++-8 
             TARGET=build
-          containerCommand: '/.ci/ci-script.sh'
+          containerCommand: '/build/darktable/.ci/ci-script.sh'
           workDir: '/build'
           detached: false
   - job: WINDOWS
