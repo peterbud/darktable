@@ -6,15 +6,16 @@ jobs:
   steps:
     - task: docker@0
       displayName: Build
-      action: 'Run an image'
-      imageName: darktable/darktable
-      volumes: |
-       $(Build.SourcesDirectory):/src
-       $(Build.BinariesDirectory):/build
-      envVars:
-        CC=gcc
-      workDir: '/build'
-      detached: false
+      inputs:
+        action: 'Run an image'
+        imageName: darktable/darktable
+        volumes: |
+         $(Build.SourcesDirectory):/src
+         $(Build.BinariesDirectory):/build
+        envVars:
+          CC=gcc
+        workDir: '/build'
+        detached: false
   - job: WINDOWS
     timeoutInMinutes: 60
     pool:
