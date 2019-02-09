@@ -1,5 +1,5 @@
 jobs:
-  - job: MSYS2-MINGW64
+  - job: WINDOWS
     timeoutInMinutes: 60
     pool:
       vmImage: vs2017-win2016
