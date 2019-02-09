@@ -15,7 +15,6 @@ jobs:
       envVars:
         CC=gcc
       workDir: '/build'
-      containerCommand: '/src/ci/build.sh'
       detached: false
   - job: WINDOWS
     timeoutInMinutes: 60
