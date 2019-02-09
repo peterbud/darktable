@@ -4,6 +4,10 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+      - checkout: self
+        clean: true
+        submodules: true
+        displayName: Checkout darktable sources    
       - bash: docker pull darktable/darktable
         displayName: Pull Docker image for build
         failOnStderr: false
