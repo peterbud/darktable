@@ -18,6 +18,8 @@ jobs:
           containerCommand: /build/darktable/.ci/ci-script.sh
           workingDirectory: '/build/darktable-build'
           runInBackground: false
+          arguments:
+            --tmpfs=/build/darktable-install
           envVars: |
             CC=gcc-8 
             CXX=g++-8
