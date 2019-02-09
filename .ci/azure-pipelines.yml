@@ -6,7 +6,6 @@ jobs:
   steps:
     - task: docker@0
       displayName: Build
-      inputs:
       action: 'Run an image'
       imageName: darktable/darktable
       volumes: |
