@@ -4,11 +4,15 @@ jobs:
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
+      - bash: docker pull darktable/darktable
+        displayName: Pull Docker image for build
+        failOnStderr: false
       - task: docker@1
-        displayName: Build
+        displayName: Compile in Linux container
         inputs:
           command: run
           imageName: darktable/darktable
+          containerCommand: /.ci/ci-script.sh
           envVars:
             CC=gcc-8 
             CXX=g++-8 
