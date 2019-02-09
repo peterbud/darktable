@@ -16,7 +16,7 @@ jobs:
             $(Build.SourcesDirectory):/build/darktable
             $(Build.BinariesDirectory):/build/darktable-build
           containerCommand: /build/darktable/.ci/ci-script.sh
-          workDir: '/build/darktable-build'
+          workingDirectory: '/build/darktable-build'
           runInBackground: false
           envVars:
             CC=gcc-8 
