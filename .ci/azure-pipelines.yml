@@ -1,6 +1,6 @@
 jobs:
   - job: LINUX_GCC
-    displayName: 'Linux (amd64; Trusty; GCC)'
+    displayName: 'LINUX (amd64; Trusty; GCC)'
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
@@ -8,15 +8,19 @@ jobs:
         displayName: Build
         inputs:
           action: 'Run an image'
-          imageName: darktable/darktable
+          imageName: 'darktable/darktable:latest'
           volumes: |
-            $(Build.SourcesDirectory):/src
-            $(Build.BinariesDirectory):/build
+            $(Build.SourcesDirectory):/build/darktable
+            $(Build.BinariesDirectory):/build/darktable-build
           envVars:
-            CC=gcc
+            CC=gcc-8 
+            CXX=g++-8 
+            TARGET=build
+          containerCommand: '/.ci/ci-script.sh'
           workDir: '/build'
           detached: false
   - job: WINDOWS
+    displayName: 'WINDOWS (x86_64; GCC)'
     timeoutInMinutes: 60
     pool:
       vmImage: vs2017-win2016
