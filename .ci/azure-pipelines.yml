@@ -12,11 +12,7 @@ jobs:
         inputs:
           command: run
           imageName: darktable/darktable
-          volumes: |
-            $(Build.SourcesDirectory):/src
-            $(Build.BinariesDirectory):/build
-          workDir: '/build'
-          containerCommand: /.ci/ci-script.sh
+          containerCommand: $(Build.SourcesDirectory)/.ci/ci-script.sh
           envVars:
             CC=gcc-8 
             CXX=g++-8 
