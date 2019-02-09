@@ -8,7 +8,7 @@ jobs:
         displayName: Build
         inputs:
           action: 'Run an image'
-          imageName: 'darktable/darktable:latest'
+          imageName: 'darktable/darktable'
           volumes: |
             $(Build.SourcesDirectory):/build/darktable
             $(Build.BinariesDirectory):/build/darktable-build
