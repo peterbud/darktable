@@ -34,7 +34,7 @@ jobs:
             SRC_DIR=/build/darktable
             BUILD_DIR=/build/darktable-build
   - job: MACOS_GCC
-    displayName: 'MACOS (macOS X Mojave 10.14; GCC)'
+    displayName: 'MacOS (macOS X Mojave 10.14; GCC)'
     pool:
       vmImage: 'macOS-10.14'
     steps:
@@ -45,6 +45,20 @@ jobs:
       - bash: brew update && brew tap Homebrew/bundle && cd .ci && brew bundle --verbose
         displayName: Update Brew and install dependencies
         failOnStderr: false
+      - bash: . mkdir "$BUILD_DIR"
+        workingDirectory: "$SRC_DIR"
+      - bash: . "$SRC_DIR/.ci/ci-script-build.sh"
+        workingDirectory: "$BUILD_DIR"
+        displayName: Build darktable        
+        env:
+            CC=gcc-7
+            CXX=g++-7
+            CFLAGS=-pipe
+            CXXFLAGS=-pipe
+            TARGET=build
+            INSTALL_PREFIX=/build/darktable-build
+            SRC_DIR=/build/darktable
+            BUILD_DIR=/build/darktable-build       
   - job: WINDOWS
     displayName: 'WINDOWS (x86_64; GCC)'
     timeoutInMinutes: 60
