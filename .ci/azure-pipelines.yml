@@ -48,17 +48,17 @@ jobs:
       - bash: . mkdir "$BUILD_DIR"
         workingDirectory: "$SRC_DIR"
       - bash: . "$SRC_DIR/.ci/ci-script-build.sh"
+        displayName: Build darktable       
         workingDirectory: "$BUILD_DIR"
-        displayName: Build darktable        
         env:
-            CC=gcc-7
-            CXX=g++-7
-            CFLAGS=-pipe
-            CXXFLAGS=-pipe
-            TARGET=build
-            INSTALL_PREFIX=/build/darktable-build
-            SRC_DIR=/build/darktable
-            BUILD_DIR=/build/darktable-build       
+          CC=gcc-7
+          CXX=g++-7
+          CFLAGS=-pipe
+          CXXFLAGS=-pipe
+          TARGET=build
+          INSTALL_PREFIX=/build/darktable-build
+          SRC_DIR=/build/darktable
+          BUILD_DIR=/build/darktable-build       
   - job: WINDOWS
     displayName: 'WINDOWS (x86_64; GCC)'
     timeoutInMinutes: 60
