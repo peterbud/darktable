@@ -33,6 +33,18 @@ jobs:
             INSTALL_PREFIX=/build/darktable-build
             SRC_DIR=/build/darktable
             BUILD_DIR=/build/darktable-build
+  - job: MACOS_GCC
+    displayName: 'MACOS (macOS X Mojave 10.14; GCC)'
+    pool:
+      vmImage: 'macOS-10.14'
+    steps:
+      - checkout: self
+        clean: true
+        submodules: true
+        displayName: Checkout darktable sources
+      - bash: brew update && brew tap Homebrew/bundle && cd .ci && brew bundle --verbose
+        displayName: Update Brew and install dependencies
+        failOnStderr: false
   - job: WINDOWS
     displayName: 'WINDOWS (x86_64; GCC)'
     timeoutInMinutes: 60
