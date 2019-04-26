@@ -46,9 +46,9 @@ jobs:
         displayName: Update Brew and install dependencies
         failOnStderr: false
       - bash: |
-        mkdir $BUILD_DIR
-        cd $BUILD_DIR
-        $(Build.SourcesDirectory)/.ci/ci-script-build.sh
+          mkdir $BUILD_DIR
+          cd $BUILD_DIR
+          $(Build.SourcesDirectory)/.ci/ci-script-build.sh
         workingDirectory: $(Build.SourcesDirectory)
         displayName: Build darktable on MacOS
         env:
