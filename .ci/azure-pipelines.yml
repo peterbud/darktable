@@ -47,9 +47,15 @@ jobs:
         failOnStderr: false
       - bash: . mkdir "$BUILD_DIR"
         workingDirectory: "$SRC_DIR"
+        env:
+          BUILD_DIR: /build/darktable-build
+          SRC_DIR: /build/darktable
       - bash: . "$SRC_DIR/.ci/ci-script-build.sh"
         displayName: Build darktable
         workingDirectory: "$BUILD_DIR"
+        env:
+          BUILD_DIR: /build/darktable-build
+          SRC_DIR: /build/darktable
   - job: WINDOWS
     displayName: 'WINDOWS (x86_64; GCC)'
     timeoutInMinutes: 60
