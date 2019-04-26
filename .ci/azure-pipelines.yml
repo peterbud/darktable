@@ -45,14 +45,12 @@ jobs:
       - bash: brew update && brew tap Homebrew/bundle && cd .ci && brew bundle --verbose
         displayName: Update Brew and install dependencies
         failOnStderr: false
-      - bash: . mkdir "$BUILD_DIR"
-        workingDirectory: "$SRC_DIR"
-        env:
-          BUILD_DIR: /build/darktable-build
-          SRC_DIR: /build/darktable
-      - bash: . "$SRC_DIR/.ci/ci-script-build.sh"
-        displayName: Build darktable
-        workingDirectory: "$BUILD_DIR"
+      - bash: |
+        mkdir $BUILD_DIR
+        cd $BUILD_DIR
+        $(Build.SourcesDirectory)/.ci/ci-script-build.sh
+        workingDirectory: $(Build.SourcesDirectory)
+        displayName: Build darktable on MacOS
         env:
           BUILD_DIR: /build/darktable-build
           SRC_DIR: /build/darktable
